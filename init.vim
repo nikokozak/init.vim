@@ -10,14 +10,20 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
     Plug 'ryanoasis/vim-devicons'
 
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'vim-ruby/vim-ruby'
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
+
+    Plug '/usr/local/opt/fzf'
     Plug 'junegunn/fzf.vim'
 
     Plug 'morhetz/gruvbox'
     Plug 'https://gitlab.com/yorickpeterse/vim-paper.git'
     Plug 'cocopon/iceberg.vim'
-
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
     Plug 'leafgarland/typescript-vim'
 
@@ -38,7 +44,15 @@ call plug#begin('~/.config/nvim/plugged')
     " Incremental Search
     Plug 'haya14busa/incsearch.vim'
 
+    " Emmet
+    Plug 'mattn/emmet-vim'
+
 call plug#end()
+
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
+inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
 
 " Python issues
 let g:python3_host_prog='/usr/local/bin/python3'
@@ -77,8 +91,8 @@ set number
 set wildmode=longest,list
 set cc=80
 
-filetype plugin indent on
 filetype plugin on
+filetype plugin indent on
 syntax on
 syntax enable
 set clipboard=unnamedplus
@@ -137,7 +151,11 @@ command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <leader>f :ZoomToggle<CR>
 
 " Fuzzy Finding
-nnoremap <C-p> :FZF<CR>
+nnoremap <leader>' :Files<CR>
+nnoremap <C-p> :Files<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <C-b> :Buffers<CR>
+
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-s': 'split',
@@ -152,10 +170,6 @@ let g:incsearch#auto_nohlsearch = 1
 " Unhighlight:
 nnoremap <Esc><Esc> :noh<CR>:ccl<CR>
 
-" Coc Servers
-
-let g:coc_global_extensions = ['coc-emmet', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver', 'coc-solargraph']
-
 " Buffer Switching
 map gn :bn<cr>
 map gp :bp<cr>
@@ -165,3 +179,17 @@ au FileType carp call PareditInitBuffer()
 
 " Carp lisp indentation
 au FileType carp set lisp
+
+" Emmet Config
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+let g:user_emmet_leader_key=','
+
+" Sass
+autocmd FileType scss,sass setlocal noexpandtab sts=0 ts=2
+
+" LC
+let g:LanguageClient_serverCommands = {
+    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ }
+
