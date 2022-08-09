@@ -2,32 +2,46 @@ let mapleader = " " " map leader to Space
 " Escape term with Esc
 tnoremap <Esc> <C-\><C-n>
 
+set nocompatible
+
 call plug#begin('~/.config/nvim/plugged')
+
+    " Various syntax support
+    Plug 'sheerun/vim-polyglot'
+
+    " Elixir
+    Plug 'elixir-editors/vim-elixir'
+
+    " Svelte
+    Plug 'leafOfTree/vim-svelte-plugin'
 
     " Fugitive
     Plug 'tpope/vim-fugitive'
+
+    " Abolish (better replacements)
+    Plug 'tpope/vim-abolish'
 
     Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
     Plug 'ryanoasis/vim-devicons'
 
     Plug 'vim-ruby/vim-ruby'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
     Plug '/usr/local/opt/fzf'
     Plug 'junegunn/fzf.vim'
 
+    Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+
     Plug 'morhetz/gruvbox'
     Plug 'https://gitlab.com/yorickpeterse/vim-paper.git'
     Plug 'cocopon/iceberg.vim'
+    Plug 'ayu-theme/ayu-vim'
+    Plug 'NLKNguyen/papercolor-theme'
 
     Plug 'leafgarland/typescript-vim'
 
     Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
 
     Plug 'sotte/presenting.vim'
 
@@ -46,11 +60,10 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Emmet
     Plug 'mattn/emmet-vim'
-
 call plug#end()
 
-" Use deoplete.
-let g:deoplete#enable_at_startup = 1
+"   " Use deoplete.
+"   let g:deoplete#enable_at_startup = 1
 inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
 
@@ -68,12 +81,21 @@ let g:slimv_repl_split_size = 15
 " With Terminal
 let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"sbcl --load ~/.config/nvim/plugged/slimv/slime/start-swank.lisp\""'
 
+if (has("termguicolors"))
+    set termguicolors
+endif
 " Colorscheme
-colorscheme iceberg
-set background=light
+ colorscheme iceberg
+ set background=light
+" colorscheme gruvbox
+" set background=dark
+" set background=light
+" colorscheme PaperColor
+" let ayucolor="mirage"
+" colorscheme ayu
 
 " Font
-"set guifont=Cousine\ Nehttps://github.com/kovisoft/slimvrd\ Font\ Mono\ Regular\ 18
+" set guifont=Cousine\ Nehttps://github.com/kovisoft/slimvrd\ Font\ Mono\ Regular\ 18
 
 " Sensible Defaults
 
@@ -100,10 +122,6 @@ set cursorline
 set ttyfast
 set noswapfile
 
-if (has("termguicolors"))
-    set termguicolors
-endif
-
 set splitright
 set splitbelow
 
@@ -124,8 +142,11 @@ nnoremap <silent> <leader>k <C-w>k
 nnoremap <silent> <leader>j <C-w>j 
 nnoremap <silent> <leader>h <C-w>h 
 nnoremap <silent> <leader>c <C-w>c
+nnoremap <silent> <leader>d :bd<cr>
 nnoremap <silent> <leader>s <C-w>s
 nnoremap <silent> <leader>v <C-w>v
+nnoremap <silent> <leader><Left> <C-w><
+nnoremap <silent> <leader><Right> <C-w>>
 
 " Tab Switching
 map <leader>T :tabnew<cr>
@@ -164,7 +185,6 @@ let g:fzf_action = {
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 " Incremental Search
-
 map / <Plug>(incsearch-forward)
 let g:incsearch#auto_nohlsearch = 1
 " Unhighlight:
@@ -188,8 +208,5 @@ let g:user_emmet_leader_key=','
 " Sass
 autocmd FileType scss,sass setlocal noexpandtab sts=0 ts=2
 
-" LC
-let g:LanguageClient_serverCommands = {
-    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-    \ }
-
+" Testing affordances w/Elixir
+autocmd FileType elixir nnoremap <buffer> <cr> :w\|:terminal mix test<cr>
